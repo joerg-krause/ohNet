@@ -52,7 +52,7 @@
     __result; }))
 
 
-#if defined(PLATFORM_MACOSX_GNU) || defined(PLATFORM_FREEBSD)
+#if defined(PLATFORM_MACOSX_GNU) || defined(PLATFORM_FREEBSD) || !defined(__GLIBC__)
 # define TEMP_FAILURE_RETRY(expression)        \
     (__extension__                             \
     ({ long int __result;                      \
@@ -61,7 +61,9 @@
     while (__result == -1L && errno == EINTR); \
     __result; }))
 # define MAX_FILE_DESCRIPTOR FD_SETSIZE
-# define MSG_NOSIGNAL 0
+# if !defined(MSG_NOSIGNAL)
+#  define MSG_NOSIGNAL 0
+# endif
 #else
 # define MAX_FILE_DESCRIPTOR __FD_SETSIZE
 #endif
